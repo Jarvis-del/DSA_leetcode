@@ -1,0 +1,52 @@
+//-------------------------------------------------------------Approch-------------------------------------------------------------------//
+
+1.  Grid — non-zero cells are gold, zero cells act as walls and terminate the path.
+2.  DFS logic — starting from [1][1] = 6, you explore all 4 directions. The [0][1]=0 and [2][1]=0 branches are walls, so DFS stops there immediately. 
+        The [1][2]=3 branch continues up to [0][2]=7, giving a path sum of 6+3+7 = 16.
+3.  The key backtrack step — after marking grid[r][c] = 0 to avoid revisiting, you restore it to the original value after the recursive call
+        returns. This lets other starting cells explore through the same cell.
+
+Time Complexity : O(m*n * 4^(cells with gold))
+Space Complexity : O(m*n)
+
+//---------------------------------------------------------------Code--------------------------------------------------------------------//
+class Solution {
+    int m, n;
+    int[][] directions = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+    
+    public int DFS(int[][] grid, int i, int j) {
+        if(i >= m || i < 0 || j >= n || j < 0 || grid[i][j] == 0) {
+            return 0;
+        }
+        int originalGoldValue = grid[i][j];
+        grid[i][j] = 0;
+
+        int maxGold = 0;
+
+        for(int[] dir : directions) {
+            int new_i = i + dir[0];
+            int new_j = j + dir[1];
+
+            maxGold = Math.max(maxGold, DFS(grid, new_i, new_j));
+        }
+
+        grid[i][j] = originalGoldValue;
+        return originalGoldValue + maxGold;
+    }
+
+    public int getMaximumGold(int[][] grid) {
+        m = grid.length;
+        n = grid[0].length;
+
+        int maxGold = 0;
+
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(grid[i][j] != 0) {
+                    maxGold = Math.max(maxGold, DFS(grid, i, j));
+                }
+            }
+        }
+        return maxGold;
+    }
+}
