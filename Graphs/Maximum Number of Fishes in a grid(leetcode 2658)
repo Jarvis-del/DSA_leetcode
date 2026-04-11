@@ -1,0 +1,45 @@
+//-----------------------------------------------------------Approch------------------------------------------------------------------//
+# Traverse grid and identify unvisited water cells (>0)
+# Use DFS to explore connected component
+# Accumulate fish count per component
+# Maintain maximum fish collected
+# Return maximum among all components
+
+#Time Complexity: O(m × n)
+# Space Complexity: O(m × n)
+//----------------------------------------------------------------Code----------------------------------------------------------------//
+class Solution {
+    public int findMaxFish(int[][] grid) {
+        if(grid == null || grid.length == 0) return 0;
+
+        int m = grid.length;
+        int n = grid[0].length;
+        boolean[][] searched = new boolean[m][n];
+        int max = 0;
+
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(grid[i][j] > 0 && !searched[i][j]){
+                    int fish = dfs(grid, searched, i, j, m, n);
+                    max = Math.max(max,fish);
+                }
+            }
+        }
+        return max;
+    }
+
+    public int dfs(int[][] grid, boolean[][] searched, int i, int j, int m, int n){
+        if(i < 0 || j < 0 || i >= m || j >= n || grid[i][j] == 0 || searched[i][j]){
+            return 0;
+        }
+
+        searched[i][j] = true;
+        int fish = grid[i][j];
+        fish += dfs(grid, searched, i + 1, j, m, n);
+        fish += dfs(grid, searched, i - 1, j, m, n);
+        fish += dfs(grid, searched, i, j + 1, m, n);
+        fish += dfs(grid, searched, i, j - 1, m, n);
+
+        return fish;
+    }
+}

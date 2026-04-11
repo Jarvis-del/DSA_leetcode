@@ -1,0 +1,54 @@
+//-------------------------------------------------------------Approch-----------------------------------------------------------------//
+
+# Represented courses as a directed graph using adjacency list.
+# Tracked dependencies using an indegree array.
+# Applied Kahn’s Algorithm (BFS) to process nodes with zero dependencies.
+# Gradually reduced indegrees while traversing the graph.
+# Counted processed courses to detect completion.
+# If all courses are processed → no cycle → valid schedule.
+# Otherwise → cycle exists → cannot finish all courses.
+
+
+
+##   Complexity
+Time: O(V + E)
+Space: O(V + E)
+
+//---------------------------------------------------------------Code-----------------------------------------------------------------//
+class Solution {
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+
+        List<List<Integer>> adj = new ArrayList<>();
+        for(int i = 0; i < numCourses; i++) {
+            adj.add(new ArrayList<>());
+        }
+        int[] indegree = new int[numCourses];
+        for(int[] pre : prerequisites) {
+            int course = pre[0];
+            int prereq = pre[1];
+
+            adj.get(prereq).add(course);
+            indegree[course]++;
+        }
+        Queue<Integer> q = new LinkedList<>();
+        for(int i = 0; i < numCourses; i++) {
+            if(indegree[i] == 0) {
+                q.offer(i);
+            }
+        }
+        int count = 0;
+        while(!q.isEmpty()) {
+            int node = q.poll();
+            count++;
+
+            for(int neighbor : adj.get(node)) {
+                indegree[neighbor]--;
+
+                if(indegree[neighbor] == 0) {
+                    q.offer(neighbor);
+                }
+            }
+        }
+        return count == numCourses;
+    }
+}

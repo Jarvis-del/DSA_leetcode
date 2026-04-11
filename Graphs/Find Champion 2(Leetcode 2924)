@@ -1,0 +1,30 @@
+Instead of running heavy DFS from every team, we use a smart and clean trick:
+
+- We create a boolean array `hasStronger[]` to mark every team that has **at least one stronger opponent**.
+- While building the "strength graph", we mark the weaker team (`edge[1]`) as `hasStronger = true`.
+- Then we simply walk through all teams once:
+  - Teams where `hasStronger[i] == false` are the undefeated ones.
+  - If we find **exactly one** such team → that's our Champion!
+  - If zero or more than one → return `-1`
+
+//----------------------------------------------------Code------------------------------------------------------------//
+class Solution {
+    public int findChampion(int n, int[][] edges) {
+        boolean[] hasIncoming = new boolean[n];
+        for (int[] edge : edges) {
+            hasIncoming[edge[1]] = true;
+        }
+        
+        int champion = -1;
+        int count = 0;
+        
+        for (int i = 0; i < n; i++) {
+            if (!hasIncoming[i]) {
+                champion = i;
+                count++;
+            }
+        }
+        
+        return count == 1 ? champion : -1;
+    }
+}

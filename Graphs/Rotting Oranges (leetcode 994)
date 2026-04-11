@@ -1,0 +1,71 @@
+//------------------------------------------------------------Approch--------------------------------------------------------------------//
+# We put all initial rotten oranges into a queue at once (multi-source BFS) with time = 0.
+# While the queue is not empty:
+# Take out the front rotten orange.
+# Spread the rot to its 4 adjacent fresh oranges.
+# Mark them as rotten and put them into the queue with time + 1.
+
+# Since BFS processes level by level, each level naturally represents one minute.
+# Keep track of the maximum time taken to rot any orange.
+# At the end, if any fresh orange is still left → return -1, else return the max time.
+
+# This is exactly why BFS is the best fit — it simulates the simultaneous spreading in the most natural way.
+# Time and Space Complexity
+
+# Time Complexity: O(m × n)
+# Space Complexity: O(m × n)
+
+
+
+//------------------------------------------------------------------Code------------------------------------------------------------------//
+class Solution {
+    public int orangesRotting(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        
+        int freshCount = 0;
+        Queue<int[]> queue = new LinkedList<>();  // [i, j, minutes]
+        
+        // Step 1: Count fresh oranges and enqueue all initial rotten ones
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    freshCount++;
+                } else if (grid[i][j] == 2) {
+                    queue.offer(new int[]{i, j, 0});  // start with time 0
+                }
+            }
+        }
+        
+        if (freshCount == 0) return 0;  // no fresh oranges to begin with
+        
+        int[] directions = {-1, 0, 1, 0, 0, -1, 0, 1};  // up, down, left, right
+        int maxMinutes = 0;
+        
+        // Step 2: BFS - spread the rot level by level
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int i = current[0];
+            int j = current[1];
+            int minutes = current[2];
+            
+            maxMinutes = Math.max(maxMinutes, minutes);
+            
+            // Check 4 directions
+            for (int d = 0; d < 8; d += 2) {
+                int ni = i + directions[d];
+                int nj = j + directions[d + 1];
+                
+                if (ni >= 0 && ni < m && nj >= 0 && nj < n && grid[ni][nj] == 1) {
+                    // Rot this fresh orange
+                    grid[ni][nj] = 2;
+                    freshCount--;
+                    queue.offer(new int[]{ni, nj, minutes + 1});
+                }
+            }
+        }
+        
+        // Step 3: If any fresh oranges remain, impossible
+        return freshCount == 0 ? maxMinutes : -1;
+    }
+}

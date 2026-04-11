@@ -1,0 +1,75 @@
+
+# Understand the Goal
+Capture all 'O' regions that are completely surrounded by 'X'.
+# Key Observation
+Any 'O' connected to the boundary cannot be captured.
+# Strategy Shift
+Instead of finding surrounded regions directly, mark non-surrounded (safe) regions first.
+# Boundary Traversal
+Traverse all boundary cells (first/last row & column).
+If a boundary cell contains 'O', start DFS.
+# DFS Marking
+During DFS, mark all connected 'O' as '#' (these are safe regions).
+# Final Traversal
+Traverse the entire board:
+Convert remaining 'O' → 'X' (captured regions)
+Convert '#' → 'O' (restore safe regions)
+Result
+# Only fully surrounded regions are flipped.
+
+# One-Line Intuition
+👉 “Mark boundary-connected regions as safe, and flip the rest.”
+
+# Time Complexity: O(m × n)
+# Space Complexity: O(m × n)
+//----------------------------------------------------------------Code-------------------------------------------------------------------//
+class Solution {
+    public void solve(char[][] board) {
+        if(board == null || board.length == 0){
+            return;
+        }
+        int m = board.length;
+        int n= board[0].length;
+
+        for(int i=0;i<m ; i++){
+            if(board[i][0] == 'O'){
+                dfs(board,i,0);
+            }
+            if(board[i][n-1] == 'O'){
+                dfs(board, i, n-1);
+            }
+        }
+        for(int j=0; j<n; j++){
+            if(board[0][j] == 'O'){
+                dfs(board, 0 ,j);
+            }        
+            if(board[m-1][j] == 'O'){
+                dfs(board, m-1,j);
+            }
+        }
+
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n ;j++){
+                if(board[i][j] == 'O'){
+                    board[i][j] = 'X';
+                }
+                else if(board[i][j] == '#'){
+                    board[i][j] = 'O';
+                }
+            }
+        }
+    }
+    private void dfs(char[][]board, int i, int j){
+        int m = board.length;
+        int n = board[0].length;
+
+        if(i <0 || j < 0 || i >= m|| j >= n || board[i][j] != 'O'){
+            return;
+        }
+        board[i][j] = '#';
+        dfs(board, i + 1, j);
+        dfs(board, i - 1, j);
+        dfs(board, i, j + 1);
+        dfs(board, i, j - 1);
+    }
+}

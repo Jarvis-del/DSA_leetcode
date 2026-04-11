@@ -1,0 +1,47 @@
+//----------------------------------------------------------------Approch-----------------------------------------------------------------//
+
+👉 Think of cities like a network of roads
+👉 You start from city 1 and explore all reachable cities
+
+While traveling:
+  You don’t care how you reach
+  You just keep asking:
+“What is the smallest road I have seen so far?”
+
+Finally:
+👉 That smallest road is the answer
+
+##  Complexity
+Time: O(n + m)
+Space: O(n + m)
+//-----------------------------------------------------------------Code-------------------------------------------------------------------//
+class Solution {
+    public int minScore(int n, int[][] roads) {
+        List<List<int[]>> adj = new ArrayList<>();
+        for(int i = 0; i <= n; i++){
+            adj.add(new ArrayList<>());
+        }
+        for(int[] r : roads){
+            adj.get(r[0]).add(new int[]{r[1], r[2]});
+            adj.get(r[1]).add(new int[]{r[0], r[2]});
+        }
+        boolean[] visited = new boolean[n+1];
+        return dfs(1, adj, visited);
+    }
+
+    private int dfs(int node, List<List<int[]>> adj, boolean[] visited){
+        visited[node] = true;
+        int min = Integer.MAX_VALUE;
+        for(int[] nei : adj.get(node)){
+            int next = nei[0];
+            int dist = nei[1];
+
+            min = Math.min(min, dist);
+
+            if(!visited[next]){
+                min = Math.min(min, dfs(next, adj, visited));
+            }
+        }
+        return min;
+    }
+}

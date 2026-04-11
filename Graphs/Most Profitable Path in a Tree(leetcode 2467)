@@ -1,0 +1,84 @@
+//------------------------------------------------------------Approch------------------------------------------------------------------//
+
+1.  The setting — a tree of tollgates
+You have a tree of n nodes. Each node is a tollgate with a price tag — positive means you earn money, negative means you pay. Alice starts at leaf node 0 (root) and walks down. Bob starts at node bob and races up toward root. Both move one step per second.
+2.  Bob's mission — stamp his path first
+Before Alice can plan her route, we need to know exactly which nodes Bob passes through and at which second he reaches each one. We run dfsBob() from Bob's start toward root. Every visited node gets stamped with Bob's arrival time in a bobPath map. If a branch is a dead end (doesn't lead to root), we backtrack and remove those stamps — this is the key correctness step.
+3.  The gate rules — who collects what
+At every node Alice visits, three outcomes are possible based on comparing her step count vs Bob's stamp:
+Alice first: Bob hasn't arrived yet → Alice collects full amount[node]
+Tie: Both arrive same second → Alice collects half (amount[node] / 2)
+Bob first : Bob already passed → gate is open, Alice collects 0
+4.  Alice's mission — explore every root-to-leaf path
+dfsAlice() walks the whole tree from root, carrying a running income total. At each node it applies the gate rule above and adds to the total. The income is only recorded when Alice hits a leaf (no unvisited children). The answer is the maximum income seen across all leaves.
+5. Why backtracking in dfsBob matters
+The tree may have branches that don't lead to root. Without removing dead-end nodes from bobPath, Alice would wrongly think Bob visits those nodes too — and collect 0 income there instead of the full amount. The bobPath.remove(node) on backtrack is what keeps the map honest.
+
+Time Complexity : O(n)
+Space Complexity: O(n)
+
+//---------------------------------------------------------------Code--------------------------------------------------------------------//
+class Solution {
+
+    private List<Integer> []graph;
+    private Map<Integer,Integer> bobPath = new HashMap<>();
+    private int []amount;
+    private int maxIncome = Integer.MIN_VALUE;
+
+    public int mostProfitablePath(int[][] edges, int bob, int[] amount) {
+        int n = amount.length;
+        this.amount = amount;
+        graph = new ArrayList[n];
+        for(int i=0; i<n; i++){
+            graph[i] = new ArrayList<>();
+        }
+
+        for(int []e : edges){
+            graph[e[0]].add(e[1]);
+            graph[e[1]].add(e[0]);
+        }
+
+        dfsBob(bob, -1, 0);
+        dfsAlice(0, -1, 0, 0);
+
+        return maxIncome;
+    }
+    private boolean dfsBob(int node, int parent, int step){
+        bobPath.put(node, step);
+        if(node == 0){
+            return true;
+        }
+        for(int nei : graph[node]){
+            if(nei != parent){
+                if(dfsBob(nei, node, step + 1)){
+                    return true;
+                }
+            }
+        }
+        bobPath.remove(node);
+        return  false;
+    }
+    private void dfsAlice(int node, int parent, int aliceStep, int income) {
+
+        int gate;
+        if (!bobPath.containsKey(node)) {
+            gate = amount[node];       
+        } else if (aliceStep < bobPath.get(node)) {
+            gate = amount[node];             
+        } else if (aliceStep == bobPath.get(node)) {
+            gate = amount[node] / 2;           
+        } else {
+            gate = 0;                           
+        }
+
+        income += gate;
+        boolean isLeaf = true;
+        for (int nei : graph[node]) {
+            if (nei != parent) {
+                isLeaf = false;
+                dfsAlice(nei, node, aliceStep + 1, income);
+            }
+        }
+        if (isLeaf) maxIncome = Math.max(maxIncome, income);
+    }
+}

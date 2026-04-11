@@ -1,0 +1,151 @@
+//--------------------------------------------------------------Approch---------------------------------------------------------------//
+#  You place your piece and send “rays” in all 8 directions.
+#  Each ray must pass through enemy pieces and end at your own piece.
+#  If at least one such ray exists → move is valid.
+
+##    Complexity
+
+# Time Complexity = O(8 × max(m, n)) ≈ O(n)
+# Space Complexity = O(1)
+//-------------------------------------------------------------Code-------------------------------------------------------------------//
+class Solution {
+    public boolean checkMove(char[][] board, int rMove, int cMove, char color) {
+        
+        char oppo;
+        if (color == 'W') {
+            oppo = 'B';
+        } else {
+            oppo = 'W';
+        }
+
+        int m = board.length;
+        int n = board[0].length;
+
+        int count = 0;
+
+        // 🔼 UP direction (your original logic fixed)
+        int i = rMove - 1;
+        boolean foundOppo = false;
+
+        while (i >= 0) {
+            if (board[i][cMove] == oppo) {
+                foundOppo = true;
+                i--;
+            } 
+            else if (board[i][cMove] == color) {
+                if (foundOppo) count++;
+                break;
+            } 
+            else { // '.'
+                break;
+            }
+        }
+
+        // 🔽 DOWN
+        i = rMove + 1;
+        foundOppo = false;
+        while (i < m) {
+            if (board[i][cMove] == oppo) {
+                foundOppo = true;
+                i++;
+            } 
+            else if (board[i][cMove] == color) {
+                if (foundOppo) count++;
+                break;
+            } 
+            else break;
+        }
+
+        // ◀ LEFT
+        int j = cMove - 1;
+        foundOppo = false;
+        while (j >= 0) {
+            if (board[rMove][j] == oppo) {
+                foundOppo = true;
+                j--;
+            } 
+            else if (board[rMove][j] == color) {
+                if (foundOppo) count++;
+                break;
+            } 
+            else break;
+        }
+
+        // ▶ RIGHT
+        j = cMove + 1;
+        foundOppo = false;
+        while (j < n) {
+            if (board[rMove][j] == oppo) {
+                foundOppo = true;
+                j++;
+            } 
+            else if (board[rMove][j] == color) {
+                if (foundOppo) count++;
+                break;
+            } 
+            else break;
+        }
+
+        // ↖ DIAGONAL
+        i = rMove - 1; j = cMove - 1;
+        foundOppo = false;
+        while (i >= 0 && j >= 0) {
+            if (board[i][j] == oppo) {
+                foundOppo = true;
+                i--; j--;
+            } 
+            else if (board[i][j] == color) {
+                if (foundOppo) count++;
+                break;
+            } 
+            else break;
+        }
+
+        // ↗ DIAGONAL
+        i = rMove - 1; j = cMove + 1;
+        foundOppo = false;
+        while (i >= 0 && j < n) {
+            if (board[i][j] == oppo) {
+                foundOppo = true;
+                i--; j++;
+            } 
+            else if (board[i][j] == color) {
+                if (foundOppo) count++;
+                break;
+            } 
+            else break;
+        }
+
+        // ↙ DIAGONAL
+        i = rMove + 1; j = cMove - 1;
+        foundOppo = false;
+        while (i < m && j >= 0) {
+            if (board[i][j] == oppo) {
+                foundOppo = true;
+                i++; j--;
+            } 
+            else if (board[i][j] == color) {
+                if (foundOppo) count++;
+                break;
+            } 
+            else break;
+        }
+
+        // ↘ DIAGONAL
+        i = rMove + 1; j = cMove + 1;
+        foundOppo = false;
+        while (i < m && j < n) {
+            if (board[i][j] == oppo) {
+                foundOppo = true;
+                i++; j++;
+            } 
+            else if (board[i][j] == color) {
+                if (foundOppo) count++;
+                break;
+            } 
+            else break;
+        }
+
+        return count > 0;
+    }
+}

@@ -1,0 +1,59 @@
+# All Paths From Source to Target - LeetCode Solution
+
+## Problem Statement
+
+**LeetCode Problem #797**: [All Paths From Source to Target](https://leetcode.com/problems/all-paths-from-source-to-target/)
+
+Given a directed acyclic graph (**DAG**) of `n` nodes labeled from `0` to `n-1`, find **all possible paths** from node `0` to node `n-1`.
+
+The graph is given as an adjacency list where `graph[i]` is a list of all nodes you can visit from node `i`.
+
+##  Approach
+This solution uses Breadth-First Search (BFS) to find all paths from source (0) to target (n-1).
+Key Points:
+
+We treat each path as a list of nodes.
+Use a Queue to perform BFS, storing the entire path so far.
+When we reach the target node, we add the complete path to the result.
+Since it's a DAG (no cycles), we don't need to track visited nodes.
+
+## Time Complexity
+
+O(N × 2^E) in worst case (where N is nodes and E is edges), because we may explore all possible paths.
+
+## Space Complexity
+
+O(N × 2^E) — due to storing all paths in the queue and result.
+//-------------------------------------------------------------graph(BFS)--------------------------------------------------------------//
+class Solution {
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        int n = graph.length;
+         int source = 0;
+        int target = n-1;
+        
+        List<List<Integer>> result = new ArrayList<>();
+        Queue<List<Integer>> queue = new LinkedList<>();
+
+        List<Integer> temp = new ArrayList<>();
+        temp.add(source);
+        queue.offer(temp);
+
+        while(!queue.isEmpty()){
+            List<Integer> currPath = queue.poll();
+
+            int lastNode = currPath.get(currPath.size() - 1);
+
+            if(lastNode == target){
+                result.add(currPath);
+            }
+            else{
+                for(int v: graph[lastNode]){
+                    List<Integer> newPath = new ArrayList<>(currPath);
+                    newPath.add(v);
+                    queue.offer(newPath);
+                }
+            }
+        }
+        return result;
+    }
+}

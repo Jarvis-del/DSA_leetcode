@@ -1,0 +1,51 @@
+//-------------------------------------------------------------Approch-------------------------------------------------------------------//
+
+1. We maintain a visited array of size n to keep track of which cities have been visited.
+2. We iterate through every city (from 0 to n-1).
+3. If a city is not visited, it means we have found a new province.
+      Increment the province count by 1.
+      Start a DFS from this city to mark all cities that are connected to it (directly or indirectly) as visited.
+
+4. In DFS:
+      Mark the current city as visited.
+      Look at the entire row of the current city in the matrix.
+    For every j where isConnected[current][j] == 1 and city j is not visited, recursively visit city j.
+
+5. Repeat this process until all cities are checked.
+
+Time Complexity O(n²)
+Space Comlexity: o(n * n )
+//----------------------------------------------------------------Code-------------------------------------------------------------------//
+class Solution {
+    boolean [][]visited;
+    int n;
+
+    public int findCircleNum(int[][] isConnected) {
+        n = isConnected.length;
+        int count  = 0;
+        visited = new boolean[n][n];
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(isConnected[i][j] == 1 && !visited[i][j]){
+                    count++;
+                    dfs(isConnected, i , j);
+                }
+            }
+        }
+        return count;
+    }
+    
+    public void dfs(int [][]isConnected, int i, int j){
+        if(i < 0 || j < 0 || i >= n || j >= n || visited[i][j]){
+            return;
+        }
+        
+        visited[i][j] = true;
+        for(int col = 0; col < n; col++){
+            if(isConnected[j][col] == 1 && !visited[j][col]){
+                dfs(isConnected, j, col);
+            }
+        }
+    }
+}

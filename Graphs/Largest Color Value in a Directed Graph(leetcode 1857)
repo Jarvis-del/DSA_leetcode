@@ -1,0 +1,58 @@
+
+
+
+//---------------------------------------------------------------Code-------------------------------------------------------------------//
+class Solution {
+    private List<List<Integer>> adj;
+    private int[][] memo;
+    private int[] vis;
+    private String colors;
+    private boolean hasCycle = false;
+
+    private int[] dfs(int node) {
+        vis[node] = 1;
+
+        for (int nei : adj.get(node)) {
+            if (vis[nei] == 1) {
+                hasCycle = true;
+                return memo[node];
+            }
+            if (vis[nei] == 0) {
+                dfs(nei);
+            }
+            if (hasCycle) return memo[node];
+
+            for (int c = 0; c < 26; c++)
+                memo[node][c] = Math.max(memo[node][c], memo[nei][c]);
+        }
+
+        memo[node][colors.charAt(node) - 'a']++;
+        vis[node] = 2;
+        return memo[node];
+    }
+
+    public int largestPathValue(String colors, int[][] edges) {
+        int n = colors.length();
+        this.colors = colors;
+
+        adj = new ArrayList<>();
+        for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+
+        memo = new int[n][26];
+        vis = new int[n];
+
+        for (int[] e : edges)
+            adj.get(e[0]).add(e[1]);
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (vis[i] == 0) {
+                dfs(i);
+                if (hasCycle) return -1;
+            }
+            for (int c = 0; c < 26; c++)
+                ans = Math.max(ans, memo[i][c]);
+        }
+        return ans;
+    }
+}

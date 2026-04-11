@@ -1,0 +1,64 @@
+##  Approach
+1. We model the board as a graph where each cell represents a node.
+2. Since we need the minimum number of moves, we use Breadth-First Search (BFS).
+3. We start from cell 1 and simulate dice rolls (1 to 6) to explore all possible next positions.
+4. A helper function getCoord(s) converts a cell number into its (row, col) on the board, handling the zigzag pattern.
+5. For each move:
+    Roll the dice and compute the next cell.
+    Convert it to board coordinates.
+    If the cell contains a snake or ladder, move to the destination given in the board.
+6. Otherwise, continue normally.
+7. We use a visited array to avoid revisiting cells and prevent infinite loops.
+8. BFS ensures that the first time we reach the last cell (n*n), we have the minimum number of steps.
+
+## ⏱️ Complexity
+1. Time Complexity: O(n²)
+2. Space Complexity: O(n²)
+
+
+If you want, I can also convert this into a README.md format with headings + badges for your repo.
+//--------------------------------------------------------------Code------------------------------------------------------------------//
+class Solution {
+    int n;
+    private int[] getCoord(int s) {
+        int row = n - 1 - (s - 1) / n;
+        int col = (s - 1) % n;
+        
+        if ((n % 2 == 1 && row % 2 == 1) || (n % 2 == 0 && row % 2 == 0)) {
+            col = n - 1 - col;
+        }
+        
+        return new int[]{row, col};
+    }
+    public int snakesAndLadders(int[][] board) {
+        n = board.length;
+        boolean[][] visited = new boolean[n][n];
+        Queue<Integer> queue = new LinkedList<>();
+        
+        queue.offer(1);
+        visited[n - 1][0] = true;
+        int steps = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();       
+            while (size-- > 0) {
+                int curr = queue.poll();
+                if (curr == n * n) return steps;
+                for (int dice = 1; dice <= 6; dice++) {
+                    int next = curr + dice;
+                    if (next > n * n) break;
+                    int[] coord = getCoord(next);
+                    int r = coord[0], c = coord[1];   
+                    if (visited[r][c]) continue;
+                    visited[r][c] = true;
+                    if (board[r][c] == -1) {
+                        queue.offer(next);
+                    } else {
+                        queue.offer(board[r][c]);
+                    }
+                }
+            }
+            steps++;
+        }
+        return -1;
+    }
+}

@@ -1,0 +1,51 @@
+//---------------------------------------------------------Approch--------------------------------------------------------------------//
+# Cycles are the root problem — once you enter a cycle, you can loop forever.
+# So, any node:
+    in a cycle ❌ unsafe
+    leading to a cycle ❌ unsafe
+    avoiding all cycles ✅ safe
+
+## Complexity
+# Time: O(V + E)
+# Space: O(V) (DFS recursion + state array)
+//---------------------------------------------------------------Code-------------------------------------------------------------------//
+class Solution {
+    public boolean isCycleDFS(List<List<Integer>> graph, int u, int[] state) {
+
+        if (state[u] != 0) {
+            return state[u] == 1;
+        }
+        state[u] = 1;
+        for (int v : graph.get(u)) {
+            if (isCycleDFS(graph, v, state)) {
+                return true;
+            }
+        }
+        state[u] = 2; 
+        return false;
+    }
+
+    public List<Integer> eventualSafeNodes(int[][] graph) {
+        int V = graph.length;
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+            for (int v : graph[i]) {
+                adj.get(i).add(v);
+            }
+        }
+        int[] state = new int[V];
+        for (int i = 0; i < V; i++) {
+            if (state[i] == 0) {
+                isCycleDFS(adj, i, state);
+            }
+        }
+        List<Integer> safeNodes = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            if (state[i] == 2) {
+                safeNodes.add(i);
+            }
+        }
+        return safeNodes;
+    }
+}

@@ -1,0 +1,33 @@
+feat: Add solution for Find the Champion (LeetCode)
+
+- Count wins for each player by summing rows in the grid
+- Identify and return the player with the maximum wins
+- O(n²) time, O(n) space
+
+
+//------------------------------------------Brute Force----------------------------------------------//
+class Solution {
+    public int findChampion(int[][] grid) {
+        int n = grid.length;
+        int []row = new int[n];
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(i == j){
+                    continue;
+                }
+                else if(grid[i][j] == 1){
+                    row[i]++;
+                }
+            }
+        }
+        int stronger = 0;
+        int max = row[0];
+        for(int i=1; i<n; i++){
+            if(row[i] > max){
+                max = row[i];
+                stronger = i;
+            }
+        }
+        return stronger;
+    }
+}

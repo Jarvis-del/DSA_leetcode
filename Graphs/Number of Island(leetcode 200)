@@ -1,0 +1,48 @@
+//----------------------------------------------------------------Approch-------------------------------------------------------------//
+Solves Number of Islands using Depth-First Search (DFS)
+Traverse the grid row by row
+When an unvisited land cell ('1') is found, start DFS
+DFS explores all connected cells (up, down, left, right)
+Mark visited cells to avoid reprocessing
+Each DFS call represents one complete island
+Increment count for every new DFS start
+Time Complexity: O(m × n), Space Complexity: O(m × n)
+
+
+//-----------------------------------------------------------Code-------------------------------------------------------------------------//
+class Solution { 
+    public int numIslands(char[][] grid) {
+        if(grid == null || grid.length == 0) return 0;
+
+        int m = grid.length;
+        int n = grid[0].length;
+
+        boolean[][] searched = new boolean[m][n];
+        int count = 0;
+
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+
+                if(grid[i][j] == '1' && !searched[i][j]){
+                    dfs(grid, searched, i, j, m, n);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public void dfs(char[][] grid, boolean[][] searched, int i, int j, int m, int n){
+
+        if(i < 0 || j < 0 || i >= m || j >= n || grid[i][j] == '0' || searched[i][j]){
+            return;
+        }
+
+        searched[i][j] = true;
+
+        dfs(grid, searched, i + 1, j, m, n);
+        dfs(grid, searched, i - 1, j, m, n);
+        dfs(grid, searched, i, j + 1, m, n);
+        dfs(grid, searched, i, j - 1, m, n);
+    }
+}
