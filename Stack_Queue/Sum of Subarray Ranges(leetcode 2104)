@@ -1,0 +1,29 @@
+//------------------------------------------------------------Approch-------------------------------------------------------------------//
+Main har subarray ko start se expand karta hoon. Jaise-jaise window badhti hai, main current max aur min update karta hoon. 
+Har step pe unka difference (max − min) add karta hoon. End tak saare subarrays cover ho jaate hain, aur unka total range mil jaata hai.
+
+Time Complexity: O(n²)
+Space Complexity: O(1)
+//--------------------------------------------------------------Code----------------------------------------------------------------------//
+class Solution {
+    public long subArrayRanges(int[] nums) {
+        int n = nums.length;
+        long sum = 0;
+
+        for(int i = 0; i < n; i++){
+            int max = nums[i];
+            int min = nums[i];
+
+            for(int j = i; j < n; j++){
+                if(min > nums[j]){
+                    min = nums[j];
+                }
+                if(max < nums[j]){
+                    max = nums[j];
+                }
+                sum += (max - min);
+            }
+        }
+        return sum;
+    }
+}
