@@ -1,0 +1,28 @@
+//----------------------------------------------------------------Approch------------------------------------------------------------------//
+
+Core Idea: At each house, you have two choices:
+    Skip it → take whatever you had at the previous house dp[i-1]
+    Rob it → take its value + best amount from 2 houses back nums[i] + dp[i-2]
+
+Time Complexity: O(n)
+Space Comlexity: O(n)
+//-------------------------------------------------------------------Code-------------------------------------------------------------------//
+class Solution {
+    public int rob(int[] nums) {
+        int n = nums.length;
+        if(n == 1){
+            return nums[0];
+        }
+
+        int []maxLoot = new int[n];
+
+        maxLoot[0] = nums[0];
+        maxLoot[1] = Math.max(nums[1],nums[0]);
+
+        for(int i=2; i<n; i++){
+            maxLoot[i] = Math.max(maxLoot[i-1], nums[i] + maxLoot[i-2]);
+        }
+
+        return maxLoot[n-1];
+    }
+}
