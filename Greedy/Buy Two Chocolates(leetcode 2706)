@@ -1,0 +1,25 @@
+//--------------------------------------------------------------Approch--------------------------------------------------------------------//
+
+Key Idea
+We need to:
+    Buy exactly 2 chocolates
+    Spend minimum money
+    Return remaining money
+    If we cannot afford 2 chocolates, return original money
+
+Time Complexity : O(nlogn)
+Space Complexity : O(1)
+
+//----------------------------------------------------------------Code-------------------------------------------------------------------//
+class Solution {
+    public int buyChoco(int[] prices, int money) {
+        Arrays.sort(prices);
+
+        int moneyUsed = prices[0] + prices[1];
+        if(moneyUsed > money){
+            return money;
+        }
+
+        return money - moneyUsed;
+    }
+}
