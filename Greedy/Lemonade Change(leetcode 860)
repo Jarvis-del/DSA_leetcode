@@ -1,0 +1,49 @@
+//----------------------------------------------------------------Approch---------------------------------------------------------------//
+
+We're standing at a lemonade stand selling juice for $5. Customers pay with $5, $10, or $20 bills.
+  $5 bill → Just pocket it, no change needed. five++
+  $10 bill → Give back $5 change. Need a $5 bill in hand, else fail. five-- , ten++
+  $20 bill → Give back $15 change. Two ways:
+Best way → Give $10 + $5 (saves $5 bills for future)
+Backup → Give three $5s
+Neither possible → fail
+
+Why prefer $10 + $5 over three $5s?
+$5 bills are precious — they're the only way to change a $10. So spend $10 bills first whenever possible.
+
+Time Complexity: O(n)
+Space Comlexity: O(1)
+
+//------------------------------------------------------------------Code-----------------------------------------------------------------//
+class Solution {
+    public boolean lemonadeChange(int[] bills) {
+        int five = 0, ten = 0;
+        int n = bills.length;
+        int i = 0;
+
+        while (i < n) {
+            if (bills[i] == 5) {
+                five++;
+                i++;
+            }
+            else if (bills[i] == 10) {
+                if (five == 0) return false;   // can't give $5 change
+                five--;
+                ten++;
+                i++;
+            }
+            else {                             // bills[i] == 20
+                if (ten > 0 && five > 0) {     // give $10 + $5
+                    ten--;
+                    five--;
+                } else if (five >= 3) {        // give three $5s
+                    five -= 3;
+                } else {
+                    return false;              // can't give $15 change
+                }
+                i++;
+            }
+        }
+        return true;
+    }
+}
