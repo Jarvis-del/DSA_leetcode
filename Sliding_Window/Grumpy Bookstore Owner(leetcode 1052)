@@ -1,0 +1,28 @@
+
+Time Complexity: O(n)
+Space Complexity: O(1)
+
+class Solution {
+    public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
+        int n = customers.length;
+
+        int baseSatisfied = 0;
+        for (int i = 0; i < n; i++) {
+            baseSatisfied += customers[i] * (1 - grumpy[i]);
+        }
+
+        int windowGain = 0;
+        for (int i = 0; i < minutes; i++) {
+            windowGain += customers[i] * grumpy[i];
+        }
+
+        int maxGain = windowGain;
+        for (int i = minutes; i < n; i++) {
+            windowGain += customers[i] * grumpy[i];
+            windowGain -= customers[i - minutes] * grumpy[i - minutes];
+            maxGain = Math.max(maxGain, windowGain);
+        }
+
+        return baseSatisfied + maxGain;
+    }
+}
