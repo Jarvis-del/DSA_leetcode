@@ -1,0 +1,37 @@
+//-------------------------------------------------------------Approch-------------------------------------------------------------------//
+
+Scan left to right. Whenever you find a 0, flip the window of 3 starting there.
+This is a Greedy approach — fix the problem as early as possible, don't delay.
+
+Time Complexity: O(n)
+Space Comlexity: O(1)
+
+//----------------------------------------------------------------Code-------------------------------------------------------------------//
+class Solution {
+    public int minOperations(int[] nums) {
+        int start = 0;
+        int end = nums.length;
+        int count = 0;
+
+        while (start <= end - 3) {   
+            if (nums[start] == 0) {
+                count++;
+                for (int i = start; i <= start + 2; i++) {   
+                    if (nums[i] == 0) {
+                        nums[i] = 1;
+                    } else {
+                        nums[i] = 0;
+                    }
+                }
+            }
+            start++;
+        }
+
+        for (int i = 0; i < end; i++) {
+            if (nums[i] == 0) {
+                return -1;
+            }
+        }
+        return count;
+    }
+}
