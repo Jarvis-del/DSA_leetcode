@@ -1,0 +1,60 @@
+//----------------------------------------------------------------Approch----------------------------------------------------------------//
+
+1. Step 1: Reserve a 1 for the last position
+    "To make the number odd, the last bit MUST be 1."
+    If the last character is already '1' → great, do nothing
+    If not → scan from left, find any '1', and swap it to the last position
+
+2. Step 2: Maximize the remaining left part
+    "Now forget the last bit. Push all remaining 1s to the front."
+    Use two pointers on the substring excluding the last character
+    start from the left, end from the right
+    Whenever start sees a '0' and end sees a '1' → swap them
+
+3. Step 3: Return the result
+    "Combine the sorted left part + reserved 1 at end."
+
+Time Complexity: O(n)
+Space Comlexity O (n)
+
+//--------------------------------------------------------------------Code---------------------------------------------------------------//
+class Solution {
+    public String maximumOddBinaryNumber(String s) {
+        
+        char[] chars = s.toCharArray();
+        int length = chars.length - 1;
+
+        // Move a '1' to the last position if not already there
+        if (chars[length] != '1') {
+            for (int i = 0; i < length; i++) {
+                if (chars[i] == '1') {
+                    char temp = chars[i];
+                    chars[i] = chars[length];
+                    chars[length] = temp;
+                    break;
+                }
+            }
+        }
+
+        // Two pointer: push all remaining '1's to the left
+        int start = 0;
+        int end = length - 1;  // exclude last position
+
+        while (start < end) {
+            if (chars[start] == '1') {
+                start++;
+            } else if (chars[end] == '0') {
+                end--;
+            } else {
+                // chars[start] == '0' && chars[end] == '1' → swap
+                char temp = chars[start];
+                chars[start] = chars[end];
+                chars[end] = temp;
+                start++;
+                end--;
+            }
+        }
+
+        return new String(chars);
+    }
+}
