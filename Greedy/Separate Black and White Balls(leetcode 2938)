@@ -1,0 +1,25 @@
+//---------------------------------------------------------------Approch--------------------------------------------------------------------//
+
+Imagine a line of balls:
+  '1' = black ball (needs to go right)
+  '0' = white ball (needs to go left)
+
+Now think:
+  Every time you see a white ball ('0'), it must cross all the black balls ('1') before it to reach the left.
+
+Time Comlexity: O(n)
+Space Complexity: O(1)
+
+//-----------------------------------------------------------------Code-------------------------------------------------------------------//
+class Solution {
+    public long minimumSteps(String s) {
+        long swaps = 0, ones = 0;
+
+        for (char c : s.toCharArray()) {
+            if (c == '1') ones++;
+            else swaps += ones;
+        }
+
+        return swaps;
+    }
+}
