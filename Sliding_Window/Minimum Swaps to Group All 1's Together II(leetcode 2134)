@@ -1,0 +1,37 @@
+Time Complexity: On)
+Space Complexity: O(n)
+
+class Solution {
+    public int minSwaps(int[] nums) {
+        int n = nums.length;
+        int countOfOne = 0;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == 1) countOfOne++;
+        }
+        
+        if (countOfOne == 0 || countOfOne == n) return 0;
+    
+        int[] arr = new int[2 * n];
+        for (int i = 0; i < n; i++) arr[i] = nums[i];
+        for (int i = 0; i < n; i++) arr[n + i] = nums[i];
+        
+        int minSwap = Integer.MAX_VALUE;
+        int meet0 = 0;
+        int meet1 = 0;
+        int left = 0;
+        
+        for (int right = 0; right < 2 * n; right++) {
+            if (arr[right] == 1) meet1++;
+            else meet0++;
+            
+            if (right - left + 1 == countOfOne) {
+                minSwap = Math.min(minSwap, meet0);
+                
+                if (arr[left] == 1) meet1--;
+                else meet0--;
+                left++;
+            }
+        }
+        return minSwap;
+    }
+}
