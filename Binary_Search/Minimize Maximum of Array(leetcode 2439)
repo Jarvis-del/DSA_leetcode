@@ -1,0 +1,46 @@
+Time Complexity : O(nlogM)
+Space Complexity : O(n)
+
+class Solution {
+    public int minimizeArrayValue(int[] nums) {
+        int n = nums.length;
+
+        long maxL = 0;
+        long maxR = 0;
+
+        for(int num : nums){
+            maxR = Math.max(maxR, num);
+        }
+
+        long result = maxR;
+
+        while(maxL <= maxR){
+            long midMax = maxL + (maxR - maxL) / 2;
+
+            if(isValid(nums, midMax, n)){
+                result = midMax;
+                maxR = midMax - 1;
+            }
+            else{
+                maxL = midMax + 1;
+            }
+        }
+        return (int)result;
+    }
+    private boolean isValid(int []nums, long midMax, int n){
+        long []arr = new long[n];
+        for(int i=0; i<n; i++){
+            arr[i] = nums[i];
+        }
+
+        for(int i=0; i<n-1; i++){
+            if(arr[i] > midMax){
+                return false;
+            }
+            long buffer = midMax - arr[i];
+            arr[i+1] = arr[i+1] - buffer;
+        }
+
+        return arr[n-1] <= midMax;
+    }
+}
