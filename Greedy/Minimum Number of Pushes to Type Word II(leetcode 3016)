@@ -1,0 +1,26 @@
+Time Complexity : O(n)
+Space Complexity : O(n)
+
+class Solution {
+    public int minimumPushes(String word) {
+        HashMap<Character, Integer> map = new HashMap<>();
+
+        for(char c : word.toCharArray()){
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+
+        if(map.size() <= 8){
+            return word.length();
+        }
+
+        List<Integer> freq = new ArrayList<>(map.values());
+        freq.sort(Collections.reverseOrder());
+
+        int ans = 0;
+        for(int i=0; i<freq.size(); i++){
+            int pushes = (i / 8) + 1;
+            ans += pushes * freq.get(i);
+        }
+        return ans;
+    }
+}
